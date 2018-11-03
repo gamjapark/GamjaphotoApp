@@ -5,24 +5,24 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.AsyncTask
+import android.os.Environment
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 
 import kotlinx.android.synthetic.main.gamja_detailcardview.view.*
-import java.io.BufferedInputStream
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStreamReader
+import java.io.*
 import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
+import android.widget.Toast
 
 
 @Suppress("DEPRECATION")
 
-class ImageDetail(private var c: Context, private var myGridView: GridView, private var onePicture:ShortInfo.photo, private var photoRul:String): AsyncTask<String, Void, Bitmap?>() {
+class ImageDetail(private var c: Context,private var myBtn:Button ,private var myGridView: GridView, private var onePicture:ShortInfo.photo, private var photoRul:String): AsyncTask<String, Void, Bitmap?>() {
 
     private lateinit var  myprogress:ProgressDialog
     private val photoURL:String = photoRul
@@ -46,6 +46,29 @@ class ImageDetail(private var c: Context, private var myGridView: GridView, priv
         if(bit != null) {
             Toast.makeText(c, photoURL, Toast.LENGTH_LONG).show()
             myGridView.adapter = MrAdapter(c, onePicture, bit)
+
+            myBtn.setOnClickListener{
+                it.isEnabled = false
+
+                val path:String = Environment.getExternalStorageDirectory().toString()
+                val file = File(path+"/DCIM/" + onePicture.getID() + ".jpg")
+                try {
+                    file.createNewFile()
+                    val fileStream = FileOutputStream(file)
+                    bit.compress(Bitmap.CompressFormat.JPEG, 100, fileStream)
+                    fileStream.flush()
+                    fileStream.close()
+
+                    Toast.makeText(c, "Saved", Toast.LENGTH_LONG).show()
+
+                } catch (e: FileNotFoundException) {
+                    e.printStackTrace()
+                    Toast.makeText(c, e.toString(), Toast.LENGTH_LONG).show()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                    Toast.makeText(c, e.toString(), Toast.LENGTH_LONG).show()
+                }
+            }
         }
         else
             Toast.makeText(c, "이미지를 불러올 수 없습니다.", Toast.LENGTH_LONG).show()

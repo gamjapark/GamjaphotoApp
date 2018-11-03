@@ -1,9 +1,8 @@
 package com.example.gamja.gamjaphotoapp
 
-import android.content.Intent
+import android.graphics.Bitmap
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import kotlinx.android.synthetic.main.gamja_imagedetail.*
 
 
@@ -28,7 +27,8 @@ class DetailActivity : AppCompatActivity() {
         val onePhoto = ShortInfo.photo(null,title, id, secret, server, farm)
         val photoUrl:String = "http://farm"+ onePhoto.getFarm() +".staticflickr.com/"+ onePhoto.getServer() +"/"+ onePhoto.getID() +"_"+ onePhoto.getSecret() +"_b.jpg"
 
-        ImageDetail(this,gamjaDetailGridView ,onePhoto, photoUrl ).execute()
+        ImageDetail(this, gamjaSave ,gamjaDetailGridView ,onePhoto, photoUrl ).execute()
+
     }
     override fun onPause() {
         super.onPause()
