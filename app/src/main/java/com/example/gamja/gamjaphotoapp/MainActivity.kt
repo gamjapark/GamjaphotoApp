@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
     private var searchSort:String="&sort=interestingness-desc"
     private var myFormat:String ="&format=json"
     private var searchText:String="&text="
-    private var requestUrl:String = myUrl + apiKey + safeSearch + contentType + searchSort+ myFormat  + searchText
+    private var requestUrl:String = myUrl + apiKey + safeSearch + contentType + searchSort+ myFormat
 
     private var keyWord:String=""
 
@@ -25,11 +25,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.gamja_search)
 
-
-        Toast.makeText(this,keyWord, Toast.LENGTH_SHORT).show()
         searchBtn.setOnClickListener{
             keyWord = SearchTxt.text.toString()
-            getJSONINFO(this, requestUrl, gamjaGridView, keyWord).execute()
+            getJSONINFO(this, requestUrl, gamjaGridView, searchText + keyWord).execute()
         }
 
     }
