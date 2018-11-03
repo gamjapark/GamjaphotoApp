@@ -14,7 +14,8 @@ import java.net.MalformedURLException
 import java.net.URL
 
 @Suppress("DEPRECATION")
-class getJSONINFO(private var c: Context, private var myURL: String, private var myGridView: GridView) : AsyncTask<Void, Void, String>(){
+class getJSONINFO(private var c: Context, private var myURL: String, private var myGridView: GridView, private var keyword:String)
+    : AsyncTask<Void, Void, String>(){
 
     private lateinit var  myprogress:ProgressDialog
     override fun onPreExecute() {
@@ -67,7 +68,7 @@ class getJSONINFO(private var c: Context, private var myURL: String, private var
     }
 
     private fun getJSON(): String {
-        val connection = connect(myURL)
+        val connection = connect(myURL + keyword)
         if (connection.toString().startsWith("Error")) {
             return connection.toString()
         }

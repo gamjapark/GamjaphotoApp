@@ -31,7 +31,7 @@ class ShortInfo(private var c: Context, private var result: String, private var 
         myprogress.show()
     }
     override fun doInBackground(vararg voids: Void): Boolean? {
-        return Parsing()
+        return parSing()
     }
 
     override fun onPostExecute(isParsed: Boolean?) {
@@ -44,7 +44,7 @@ class ShortInfo(private var c: Context, private var result: String, private var 
             Toast.makeText(c, "정보를 불러올 수 없습니다.", Toast.LENGTH_LONG).show()
 
     }
-    private  fun Parsing():Boolean{
+    private  fun parSing():Boolean{
         result = result.replace("jsonFlickrApi(", "");
         result = result.replace(")", "");
         try {
@@ -58,7 +58,9 @@ class ShortInfo(private var c: Context, private var result: String, private var 
                 val onePhoto = jsonArray.getJSONObject(i)
 
                 val title = onePhoto.getString("title")
-                val onePicture = photo(title)
+                val id = onePhoto.getString("id")
+
+                val onePicture = photo(title, id)
                 pictures.add(onePicture)
             }
             return true
@@ -68,9 +70,12 @@ class ShortInfo(private var c: Context, private var result: String, private var 
         }
     }
 
-    class photo(private var title:String){
+    class photo(private var title:String, private var id:String){
         fun getTitle():String{
             return title
+        }
+        fun getID():String{
+            return id
         }
     }
 
@@ -100,7 +105,7 @@ class ShortInfo(private var c: Context, private var result: String, private var 
 
             titleTxt.text = onePicture.getTitle()
 
-            convertView.setOnClickListener { Toast.makeText(c,onePicture.getTitle(),Toast.LENGTH_SHORT).show() }
+            convertView.setOnClickListener { Toast.makeText(c,onePicture.getID(),Toast.LENGTH_SHORT).show() }
 
             return convertView
         }
