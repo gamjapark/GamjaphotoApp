@@ -14,40 +14,37 @@ import java.net.MalformedURLException
 import java.net.URL
 
 @Suppress("DEPRECATION")
-class getJSONINFO(private var c: Context, private var myURL: String, private var myGridView: GridView, private var keyword:String)
-    : AsyncTask<Void, Void, String>(){
+class getJSONINFO(
+    private var c: Context, private var myURL: String, private var myGridView: GridView
+) :
+    AsyncTask<Void, Void, String>() {
 
-    private lateinit var  myprogress:ProgressDialog
     override fun onPreExecute() {
         super.onPreExecute()
-
-        myprogress = ProgressDialog(c)
-        myprogress.setTitle("검색 중")
-        myprogress.setMessage("Searching...Please wait")
-        myprogress.show()
+        Toast.makeText(c, "검색 중", Toast.LENGTH_SHORT).show()
     }
-    override fun doInBackground(vararg voids: Void): String {
+
+    override fun doInBackground(vararg voids: Void): String? {
         return getJSON()
     }
 
     override fun onPostExecute(result: String) {
         super.onPostExecute(result)
 
-        myprogress.dismiss()
-        if(result.startsWith("url error")){
+        if (result.startsWith("url e")) {
             Toast.makeText(c, result, Toast.LENGTH_LONG).show()
-            Toast.makeText(c, "url이 잘못되어 연결할 수 없습니다.", Toast.LENGTH_LONG).show()
-        }else if(result.startsWith("connect error")){
+            Toast.makeText(c, "urlnox이 잘못되어 연결할 수 없습니다.", Toast.LENGTH_LONG).show()
+        } else if (result.startsWith("connect e")) {
             Toast.makeText(c, result, Toast.LENGTH_LONG).show()
             Toast.makeText(c, "네트워크에 연결할 수 없습니다.", Toast.LENGTH_LONG).show()
-        }
-        else{
+        } else {
             Toast.makeText(c, "네트워크 연결 성공", Toast.LENGTH_LONG).show()
             ShortInfo(c, result, myGridView).execute()
         }
     }
-    private fun connect(myURL:String):Any{
-        try{
+
+    private fun connect(myURL: String): Any {
+        try {
             val url = URL(myURL)
             val con = url.openConnection() as HttpURLConnection
 
@@ -58,17 +55,18 @@ class getJSONINFO(private var c: Context, private var myURL: String, private var
 
             return con
 
-        }catch (e:MalformedURLException){
+        } catch (e: MalformedURLException) {
             e.printStackTrace()
             return "url Error" + e.message
-        }catch (e:IOException){
+        } catch (e: IOException) {
             e.printStackTrace()
             return "connect Error" + e.message
         }
     }
 
-    private fun getJSON(): String {
-        val connection = connect(myURL + keyword)
+    private fun getJSON(): String? {
+
+        val connection = connect(myURL)
         if (connection.toString().startsWith("Error")) {
             return connection.toString()
         }
@@ -77,22 +75,17 @@ class getJSONINFO(private var c: Context, private var myURL: String, private var
             val con = connection as HttpURLConnection
             if (con.responseCode == 200) {
                 val inputStreamReader = BufferedInputStream(con.inputStream)
-                val bufferedReader = BufferedReader(InputStreamReader(inputStreamReader))
-
-                val stringbuffer = StringBuffer()
+                val bufferedReader = BufferedReader((InputStreamReader(inputStreamReader)))
+                val stringBuffer = StringBuffer()
                 var line: String?
-
-                while(true){
+                while (true) {
                     line = bufferedReader.readLine()
-                    if(line == null) break
-                    stringbuffer.append(line +"\n");
+                    if (line == null) break
+                    stringBuffer.append(line + "\n");
                 }
-
                 inputStreamReader.close()
                 bufferedReader.close()
-
-                return stringbuffer.toString()
-
+                return stringBuffer.toString()
             } else {
                 return "Error " + con.responseMessage
             }

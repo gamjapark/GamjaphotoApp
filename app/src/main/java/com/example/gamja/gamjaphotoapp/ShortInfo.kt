@@ -26,16 +26,14 @@ import java.net.URL
 
 class ShortInfo(private var c: Context, private var result: String, private var myGridView: GridView) : AsyncTask<Void, Void, Boolean>() {
 
-    private lateinit var  myprogress:ProgressDialog
-    private var pictures = ArrayList<photo>()
+
+    private var pictures = ArrayList<Photo>()
 
     override fun onPreExecute() {
         super.onPreExecute()
 
-        myprogress = ProgressDialog(c)
-        myprogress.setTitle("데이터 가져오는 중")
-        myprogress.setMessage("...Please wait...")
-        myprogress.show()
+        Toast.makeText(c, "데이터 가져오는 중", Toast.LENGTH_SHORT).show()
+
     }
     override fun doInBackground(vararg voids: Void): Boolean? {
         return parSing()
@@ -44,7 +42,7 @@ class ShortInfo(private var c: Context, private var result: String, private var 
     override fun onPostExecute(isParsed: Boolean?) {
         super.onPostExecute(isParsed)
 
-        myprogress.dismiss()
+
         if (isParsed!!)
             myGridView.adapter = MrAdapter(c, pictures)
         else
@@ -70,8 +68,6 @@ class ShortInfo(private var c: Context, private var result: String, private var 
                 val server = onePhoto.getString("server")
                 val farm = onePhoto.getString("farm")
 
-
-
                 val photoUrl:String = "http://farm"+ farm +".staticflickr.com/"+ server +"/"+ id +"_"+ secret +"_t.jpg"
 
 
@@ -89,7 +85,7 @@ class ShortInfo(private var c: Context, private var result: String, private var 
                         val bitmap:Bitmap = BitmapFactory.decodeStream(inputStreamReader)
                         inputStreamReader.close()
 
-                        val onePicture = photo(bitmap ,title, id, secret, server, farm)
+                        val onePicture = Photo(bitmap ,title, id, secret, server, farm)
                         pictures.add(onePicture)
                     }
                 }catch (e: MalformedURLException){
@@ -105,7 +101,7 @@ class ShortInfo(private var c: Context, private var result: String, private var 
         }
     }
 
-    class photo(private var bitmap:Bitmap?, private var title:String, private var id:String, private var secret:String, private var server:String, private var farm:String){
+    class Photo(private var bitmap:Bitmap?, private var title:String, private var id:String, private var secret:String, private var server:String, private var farm:String){
         fun getBitmap():Bitmap?{
             return bitmap
         }
@@ -126,7 +122,7 @@ class ShortInfo(private var c: Context, private var result: String, private var 
         }
     }
 
-    class MrAdapter(private var c: Context, private var pictures:ArrayList<photo>) : BaseAdapter() {
+    class MrAdapter(private var c: Context, private var pictures:ArrayList<Photo>) : BaseAdapter() {
 
         override fun getCount(): Int {
             return pictures.size
@@ -147,13 +143,11 @@ class ShortInfo(private var c: Context, private var result: String, private var 
             }
 
             val titleTxt = convertView!!.photoTitle as TextView
-            val indexTxt = convertView!!.photoIndex as TextView
             val imageSmall = convertView!!.photoSmall as ImageView
 
-            val onePicture = this.getItem(i) as photo
+            val onePicture = this.getItem(i) as Photo
 
             titleTxt.text = onePicture.getTitle()
-            indexTxt.text = (i + 1).toString()
             imageSmall.setImageBitmap(onePicture.getBitmap())
 
             convertView.setOnClickListener {

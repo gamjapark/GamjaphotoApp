@@ -89,6 +89,7 @@
 
         <ImageView
                 android:id="@+id/ownerPhoto"
+                android:src="@drawable/owner"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_marginStart="20dp"
@@ -139,7 +140,7 @@
                   android:layout_below="@id/ownerPhoto"
                   android:layout_alignParentStart="true"
                   android:layout_alignParentLeft="true"
-                  android:text="Description : "/>
+                  android:text="Description"/>
 
         <TextView android:id="@+id/photoDescriptionTxt"
                   android:layout_width="wrap_content"
@@ -162,7 +163,7 @@
                   android:layout_below="@id/photoDescriptionTxt"
                   android:layout_alignParentStart="true"
                   android:layout_alignParentLeft="true"
-                  android:text="URL : "/>
+                  android:text="URL"/>
 
         <TextView android:id="@+id/photoURLTxt"
                   android:layout_width="wrap_content"

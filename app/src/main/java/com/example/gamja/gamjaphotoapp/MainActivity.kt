@@ -9,27 +9,48 @@ import kotlinx.android.synthetic.main.gamja_search.*
 
 
 class MainActivity : AppCompatActivity() {
+    // https://secure.flickr.com/services/rest/?method=flickr.photos.search&api_key=5db3ffc3ea67dd7f9c0a321c850f322b&safe_search=1&content_type=1&sort=interestingness-desc&format=json&text=
 
-    private var  myUrl:String = "https://secure.flickr.com/services/rest/?method=flickr.photos.search"
-    private var apiKey:String ="&api_key=5db3ffc3ea67dd7f9c0a321c850f322b"
-    private var safeSearch:String="&safe_search=1"
-    private var contentType:String="&content_type=1"
-    private var searchSort:String="&sort=interestingness-desc"
-    private var myFormat:String ="&format=json"
-    private var searchText:String="&text="
-    private var requestUrl:String = myUrl + apiKey + safeSearch + contentType + searchSort+ myFormat
-
-    private var keyWord:String=""
-
+    private val apiKey: String = "&api_key=5db3ffc3ea67dd7f9c0a321c850f322b"
+    private var sortType: String = "&sort=interestingness-desc"
+    private var currentPage: Int = 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.gamja_search)
 
-        searchBtn.setOnClickListener{
-            keyWord = SearchTxt.text.toString()
-            getJSONINFO(this, requestUrl, gamjaGridView, searchText + keyWord).execute()
+        searchBtn.setOnClickListener {
+            getJSONINFO(
+                this,
+                getRequestUrl(SearchTxt.text.toString(), 20, this.currentPage), gamjaGridView
+            ).execute()
         }
+        prevBtn.setOnClickListener {
+            if (this.currentPage - 1 == 0) {
+                Toast.makeText(this, "-첫 페이지-", Toast.LENGTH_LONG).show()
+            } else {
+                --this.currentPage
+                pageCheck.text = (this.currentPage).toString()
+                getJSONINFO(
+                    this,
+                    getRequestUrl(SearchTxt.text.toString(), 20, this.currentPage), gamjaGridView
+                ).execute()
+            }
+        }
+        nextBtn.setOnClickListener {
+            ++this.currentPage
+            pageCheck.text = (this.currentPage).toString()
+            getJSONINFO(
+                this,
+                getRequestUrl(SearchTxt.text.toString(), 20, this.currentPage), gamjaGridView
+            ).execute()
+        }
+    }
 
+    fun getRequestUrl(keyword: String, perPage: Int, page: Int): String {
+        val host: String? = "https://secure.flickr.com/services/rest/"
+        val requestUrl: String? = "?method=flickr.photos.search&format=json&content_type=1&safe_search=1"
+        val pageInfo: String? = "&per_page=$perPage&page=$page"
+        return host + requestUrl + this.apiKey + this.sortType + pageInfo + "&text=" + keyword
     }
 }
 
